@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #main,
+        #main2 {
+            /* border: 1px solid red; */
+            width: 360px;
+            height: 640px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="main" width="720" height="1280"></canvas>
+    <!-- <canvas id="main2" width="720" height="1280"></canvas> -->
+    <script src="./video/media.js"></script>
+    <script src="./video/index.js"></script>
+
+    <script>
+        const builder = new VideoBuilder("main", 720, 1280);
+        const main = document.getElementById("main");
+        main.addEventListener("click", () => {
+            if (!builder.playing) {
+                builder.play()
+            } else {
+                builder.pause()
+            }
+        })
+        let url = "https://tradeplus.oss-cn-hangzhou.aliyuncs.com/videos/1669366990765-0de2dfc80dc7b347.mp4";
+
+
+        const loadVideo = async (url) => {
+            const v = document.createElement("video");
+            v.crossOrigin = "anonymous"
+            v.setAttribute("preload", "auto");
+            v.src = url;
+            return new Promise((resolve, reject) => {
+                v.onloadeddata = () => {
+                    v.loop = false;
+                    v.muted = true;
+                    console.log(v.videoWidth)
+                    console.log(v.duration)
+                    v.currentTime=1
+
+
+                    const canvas = document.getElementById("main2");
+                    const ctx = canvas.getContext("2d")
+                    console.log("draw convas 02", ctx, canvas)
+                    ctx.drawImage(v, 0, 0, v.videoWidth, v.videoHeight); //绘制can
+
+                    var img = document.createElement("img");
+                    img.src = canvas.toDataURL("image/png");
+                    document.body.appendChild(img);
+
+
+                    resolve(v)
+                }
+
+            })
+        }
+
+
+
+        (async () => {
+            // const video = await loadVideo(url)
+            // const canvas = document.getElementById("main2");
+            // console.log("draw convas 02")
+            // document.body.appendChild(video)
+            // canvas.getContext("2d").drawImage(video, 0, 0, 720, 1280); //绘制can
+        })()
+    </script>
+</body>
+
+</html>
